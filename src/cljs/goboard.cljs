@@ -10,6 +10,9 @@
 (def ^:const space-width (.floor js/Math (/ inner-board board-lines)))
 (def ^:const board-margin (* (- board-lines 1) space-width))
 
+; hack to draw pixel-perfect lines
+(def ^:const pixel 0.5)
+
 (def ^:const board-canvas
   (. js/document (getElementById "goBoard")))
 (def ^:const board-ctx
@@ -27,6 +30,20 @@
         height width]
     (. context (fillRect x y width height))))
 
+(defn draw-lines [context lines space offset margin]
+  (doseq [x (take lines
+                  (iterate (partial + space)
+                           (+ pixel offset)))]
+    ; horizontal lines
+    (. context (moveTo offset x))
+    (. context (lineTo (+ margin offset) x))
+    ; vertical lines
+    (. context (moveTo x offset))
+    (. context (lineTo x (+ margin offset))))
+  (set! (. context -strokeStyle) "#444")
+  (. context (stroke)))
+  
 (setup-board board-canvas canvas-size)
 (draw-background board-ctx board-background-color space-width board-offset
                  board-margin)
+(draw-lines board-ctx board-lines space-width board-offset board-margin)
