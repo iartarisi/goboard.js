@@ -41,6 +41,17 @@
   (set! (. (board :context) -strokeStyle) (board :markings-color))
   (. (board :context) (stroke)))
 
+(defn draw-letters [board]
+  (set! (. (board :context) -textBaseline) "top")
+  (set! (. (board :context) -fillStyle) (board :markings))
+  (dotimes [i (board :lines)]
+    (. (board :context) (fillText (get "abcdefghjklmnopqrst" i)
+                                  (+ (* i (board :space)) (board :offset))
+                                  (+ (board :margin) (board :space))))
+    (. (board :context) (fillText (- (board :lines) i)
+                                  (+ (board :margin) (board :space))
+                                  (+ (* i (board :space)) (board :offset))))))
 (setup-board board)
 (draw-background board)
 (draw-lines board)
+(draw-letters board)
