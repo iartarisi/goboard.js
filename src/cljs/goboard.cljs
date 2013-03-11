@@ -3,6 +3,7 @@
 (.write js/document "<p>Hello, world!!</p>")
 
 (def ^:const board-background-color "#E8BD68")
+(def ^:const line-color "#444")
 (def ^:const board-lines 19)
 (def ^:const board-offset 20)
 (def ^:const canvas-size 620)
@@ -30,7 +31,7 @@
         height width]
     (. context (fillRect x y width height))))
 
-(defn draw-lines [context lines space offset margin]
+(defn draw-lines [context lines space offset margin color]
   (doseq [x (take lines
                   (iterate (partial + space)
                            (+ pixel offset)))]
@@ -40,10 +41,11 @@
     ; vertical lines
     (. context (moveTo x offset))
     (. context (lineTo x (+ margin offset))))
-  (set! (. context -strokeStyle) "#444")
+  (set! (. context -strokeStyle) color)
   (. context (stroke)))
   
 (setup-board board-canvas canvas-size)
 (draw-background board-ctx board-background-color space-width board-offset
                  board-margin)
-(draw-lines board-ctx board-lines space-width board-offset board-margin)
+(draw-lines board-ctx board-lines space-width board-offset board-margin
+            line-color)
