@@ -28,15 +28,17 @@
     (. (board :context) (fillRect x y width height))))
 
 (defn draw-lines [board]
-  (doseq [x (take (board :lines)
-                  (iterate (partial + (board :space))
-                           (+ pixel (board :offset))))]
-    ;; horizontal lines
-    (. (board :context) (moveTo (board :offset) x))
-    (. (board :context) (lineTo (+ (board :inner) (board :offset)) x))
-    ;; vertical lines
-    (. (board :context) (moveTo x (board :offset)))
-    (. (board :context) (lineTo x (+ (board :inner) (board :offset)))))
+  (let [close-edge (board :offset)
+        far-edge (+ (board :offset) (board :inner))]
+    (doseq [x (take (board :lines)
+                    (iterate (partial + (board :space))
+                             (+ pixel (board :offset))))]
+      ;; horizontal lines
+      (. (board :context) (moveTo close-edge x))
+      (. (board :context) (lineTo far-edge x))
+      ;; vertical lines
+      (. (board :context) (moveTo x close-edge))
+      (. (board :context) (lineTo x far-edge))))
   (set! (. (board :context) -strokeStyle) (board :markings-color))
   (. (board :context) (stroke)))
 
