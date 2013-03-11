@@ -3,9 +3,8 @@
 (def ^:const board {:lines 19
                     :size 620
                     :offset 20
-                    :inner 558  ; (* (/ 9 10) canvas-size)
-                    :space 29  ; (.floor js/Math (/ inner-board board-lines))
-                    :margin 522  ; (* (- board-lines 1) space-width))
+                    :space 28 ; (.floor js/Math (/ size (+ 3 board-lines)))
+                    :inner 504  ; (* (- board-lines 1) space-width))
                     :canvas (. js/document (getElementById "goBoard"))
                     :context (. (. js/document (getElementById "goBoard"))
                                 (getContext "2d"))
@@ -22,9 +21,9 @@
 
 (defn draw-background [board]
   (set! (. (board :context) -fillStyle) (board :background))
-  (let [x (- (board :offset) (board :space))
-        y x
-        width (+ (board :margin) (* (/ 7 3) (board :space)))
+  (let [x 0
+        y 0
+        width (+ (board :inner) (* 2 (board :space)))
         height width]
     (. (board :context) (fillRect x y width height))))
 
@@ -32,12 +31,12 @@
   (doseq [x (take (board :lines)
                   (iterate (partial + (board :space))
                            (+ pixel (board :offset))))]
-    ; horizontal lines
+    ;; horizontal lines
     (. (board :context) (moveTo (board :offset) x))
-    (. (board :context) (lineTo (+ (board :margin) (board :offset)) x))
-    ; vertical lines
+    (. (board :context) (lineTo (+ (board :inner) (board :offset)) x))
+    ;; vertical lines
     (. (board :context) (moveTo x (board :offset)))
-    (. (board :context) (lineTo x (+ (board :margin) (board :offset)))))
+    (. (board :context) (lineTo x (+ (board :inner) (board :offset)))))
   (set! (. (board :context) -strokeStyle) (board :markings-color))
   (. (board :context) (stroke)))
 
@@ -47,9 +46,9 @@
   (dotimes [i (board :lines)]
     (. (board :context) (fillText (get "abcdefghjklmnopqrst" i)
                                   (+ (* i (board :space)) (board :offset))
-                                  (+ (board :margin) (board :space))))
+                                  (+ (board :inner) (board :space))))
     (. (board :context) (fillText (- (board :lines) i)
-                                  (+ (board :margin) (board :space))
+                                  (+ (board :inner) (board :space))
                                   (+ (* i (board :space)) (board :offset))))))
 (setup-board board)
 (draw-background board)
