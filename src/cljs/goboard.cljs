@@ -9,8 +9,8 @@
                     :canvas (. js/document (getElementById "goBoard"))
                     :context (. (. js/document (getElementById "goBoard"))
                                 (getContext "2d"))
-                    :background-color "#E8BD68"
-                    :line-color "#444"
+                    :background "#E8BD68"
+                    :markings "#444"
                     })
 
 ; hack to draw pixel-perfect lines
@@ -21,7 +21,7 @@
   (set! (. (board :canvas) -width) (board :size)))
 
 (defn draw-background [board]
-  (set! (. (board :context) -fillStyle) (board :background-color))
+  (set! (. (board :context) -fillStyle) (board :background))
   (let [x (- (board :offset) (board :space))
         y x
         width (+ (board :margin) (* (/ 7 3) (board :space)))
@@ -38,9 +38,9 @@
     ; vertical lines
     (. (board :context) (moveTo x (board :offset)))
     (. (board :context) (lineTo x (+ (board :margin) (board :offset)))))
-  (set! (. (board :context) -strokeStyle) (board :color))
+  (set! (. (board :context) -strokeStyle) (board :markings-color))
   (. (board :context) (stroke)))
-  
+
 (setup-board board)
 (draw-background board)
 (draw-lines board)
