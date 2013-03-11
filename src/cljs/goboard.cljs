@@ -1,7 +1,5 @@
 (ns goboard.goboard)
 
-(.write js/document "<p>Hello, world!!</p>")
-
 (def ^:const board-background-color "#E8BD68")
 (def ^:const line-color "#444")
 (def ^:const board-lines 19)
