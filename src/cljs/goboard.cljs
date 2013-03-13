@@ -5,6 +5,7 @@
                     :offset 20
                     :space 28 ; (.floor js/Math (/ size (+ 3 board-lines)))
                     :inner 504  ; (* (- board-lines 1) space-width))
+                    :stone-radius 11  ; space * 2/5
                     :canvas (. js/document (getElementById "goBoard"))
                     :context (. (. js/document (getElementById "goBoard"))
                                 (getContext "2d"))
@@ -79,3 +80,24 @@
   (draw-dots board))
 
 (draw-board board)
+
+(defn draw-stone [board color x y]
+  "Draw a stone on the board.
+   - color is one of: 1 - black, 2 - white
+   - x and y are zero-indexed board coordinates starting from the top left
+   corner of the board"
+  (. (board :context) (beginPath))
+  (. (board :context) (arc (+ (board :offset) pixel (* (board :space) x))
+                           (+ (board :offset) pixel (* (board :space) y))
+                           (board :stone-radius) 0 (* 2 (. js/Math -PI)) false))
+  (. (board :context) (closePath))
+  (set! (. (board :context) -strokeStyle) "black")
+  (set! (. (board :context) -fillStyle) (if (= color 1) "black" "white"))
+  (. (board :context) (fill))
+  (. (board :context) (stroke))
+  )
+
+(doseq [[x y] [[3 4] [10 14] [10 13] [11 15]]]
+  (draw-stone board 1 x y))
+(doseq [[x y] [[2 4] [9 14] [9 13] [12 15] [13 13]]]
+  (draw-stone board 2 x y))
