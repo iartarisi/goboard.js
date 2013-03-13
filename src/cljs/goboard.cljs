@@ -12,8 +12,8 @@
                     :markings "#444"
                     })
 
-; hack to draw pixel-perfect lines
-(def ^:const pixel 0.5)
+(def ^:const pixel 0.5)  ; hack to draw pixel-perfect lines
+(def ^:const dot-radius 2)  ; radius of the 9 board dots
 
 (defn setup-board [board]
   (set! (. (board :canvas) -height) (board :size))
@@ -52,7 +52,26 @@
     (. (board :context) (fillText (- (board :lines) i)
                                   (+ (board :inner) (board :space))
                                   (+ (* i (board :space)) (board :offset))))))
+
+(defn draw-dot [board x y]
+  (. (board :context) (beginPath))
+  (. (board :context) (arc (+ (board :offset) pixel (* x (board :space)))
+                           (+ (board :offset) pixel (* y (board :space)))
+                           dot-radius 0 (* 2 (. js/Math -PI)) false))
+  (. (board :context) (closePath))
+  (set! (. (board :context) -strokeStyle) (board :markings))
+  (set! (. (board :context) -fillStyle) (board :markings))
+  (. (board :context) (fill))
+  (. (board :context) (stroke)))
+
+(defn draw-dots [board]
+  (doseq [[x y] [[3  3] [9  3] [15  3]
+                 [3  9] [9  9] [15  9]
+                 [3 15] [9 15] [15 15]]]
+    (draw-dot board x y)))
+
 (setup-board board)
 (draw-background board)
 (draw-lines board)
 (draw-letters board)
+(draw-dots board)
