@@ -70,8 +70,12 @@
                  [3 15] [9 15] [15 15]]]
     (draw-dot board x y)))
 
-(setup-board board)
-(draw-background board)
-(draw-lines board)
-(draw-letters board)
-(draw-dots board)
+(defn draw-board [board]
+  "Draw an empty board"
+  (setup-board board)
+  (draw-background board)
+  (draw-lines board)
+  (draw-letters board)
+  (draw-dots board))
+
+(draw-board board)
