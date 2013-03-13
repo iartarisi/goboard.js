@@ -54,16 +54,20 @@
                                   (+ (board :inner) (board :space))
                                   (+ (* i (board :space)) (board :offset))))))
 
-(defn draw-dot [board x y]
+(defn draw-circle [board x y radius fill-color border-color]
+  "Draw a circle on the board at the coordinates indicated by x and y."
   (. (board :context) (beginPath))
   (. (board :context) (arc (+ (board :offset) pixel (* x (board :space)))
                            (+ (board :offset) pixel (* y (board :space)))
-                           dot-radius 0 (* 2 (. js/Math -PI)) false))
+                           radius 0 (* 2 (. js/Math -PI)) false))
   (. (board :context) (closePath))
-  (set! (. (board :context) -strokeStyle) (board :markings))
-  (set! (. (board :context) -fillStyle) (board :markings))
+  (set! (. (board :context) -strokeStyle) border-color)
+  (set! (. (board :context) -fillStyle) fill-color)
   (. (board :context) (fill))
   (. (board :context) (stroke)))
+  
+(defn draw-dot [board x y]
+  (draw-circle board x y dot-radius (board :markings) (board :markings)))
 
 (defn draw-dots [board]
   (doseq [[x y] [[3  3] [9  3] [15  3]
@@ -86,16 +90,8 @@
    - color is one of: 1 - black, 2 - white
    - x and y are zero-indexed board coordinates starting from the top left
    corner of the board"
-  (. (board :context) (beginPath))
-  (. (board :context) (arc (+ (board :offset) pixel (* (board :space) x))
-                           (+ (board :offset) pixel (* (board :space) y))
-                           (board :stone-radius) 0 (* 2 (. js/Math -PI)) false))
-  (. (board :context) (closePath))
-  (set! (. (board :context) -strokeStyle) "black")
-  (set! (. (board :context) -fillStyle) (if (= color 1) "black" "white"))
-  (. (board :context) (fill))
-  (. (board :context) (stroke))
-  )
+  (let [fill-color (if (= color 1) "black" "white")]
+    (draw-circle board x y (board :stone-radius) fill-color "black")))
 
 (doseq [[x y] [[3 4] [10 14] [10 13] [11 15]]]
   (draw-stone board 1 x y))
