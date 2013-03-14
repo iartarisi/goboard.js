@@ -66,14 +66,12 @@
   (. (board :context) (fill))
   (. (board :context) (stroke)))
   
-(defn draw-dot [board x y]
-  (draw-circle board x y dot-radius (board :markings) (board :markings)))
-
 (defn draw-dots [board]
+  "Draw standard goban dots in the nine points a.k.a. hoshi"
   (doseq [[x y] [[3  3] [9  3] [15  3]
                  [3  9] [9  9] [15  9]
                  [3 15] [9 15] [15 15]]]
-    (draw-dot board x y)))
+    (draw-circle board x y dot-radius (board :markings) (board :markings))))
 
 (defn draw-board [board]
   "Draw an empty board"
