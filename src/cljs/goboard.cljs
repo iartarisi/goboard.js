@@ -91,7 +91,11 @@
   (let [fill-color (if (= color 1) "black" "white")]
     (draw-circle board x y (board :stone-radius) fill-color "black")))
 
+(defn draw-last-move [board x y]
+  (draw-circle board x y dot-radius "red" "red"))
+
 (doseq [[x y] [[3 4] [10 14] [10 13] [11 15]]]
   (draw-stone board 1 x y))
 (doseq [[x y] [[2 4] [9 14] [9 13] [12 15] [13 13]]]
   (draw-stone board 2 x y))
+(draw-last-move board 2 4)
