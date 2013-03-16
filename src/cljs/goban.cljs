@@ -36,9 +36,9 @@
   (dotimes [i (board :lines)]
     (. (board :context) (fillText (get "abcdefghjklmnopqrst" i)
                                   (+ (* i (board :space)) (board :offset))
-                                  (+ (board :inner) (board :space))))
+                                  (+ (board :inner) (* (/ 5 4) (board :space)))))
     (. (board :context) (fillText (- (board :lines) i)
-                                  (+ (board :inner) (board :space))
+                                  (+ (board :inner) (* (/ 5 4) (board :space)))
                                   (+ (* i (board :space)) (board :offset))))))
 
 (defn draw-circle
