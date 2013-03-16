@@ -1,5 +1,5 @@
 (ns goboard.goboard
-  (:use [goboard.goban :only [draw-stones draw-last-move]]))
+  (:use [goboard.goban :only [draw-board draw-last-move]]))
 
 (def ^:const board {:lines 19
                     :size 620
@@ -33,6 +33,6 @@
              0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
              0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1])
 
-(draw-stones board stones)
+(draw-board board stones)
 
 (draw-last-move board 18 18)

@@ -63,15 +63,6 @@
                  [3 15] [9 15] [15 15]]]
     (draw-circle board x y dot-radius (board :markings) (board :markings))))
 
-(defn draw-board
-  "Draw an empty board"
-  [board]
-  (setup-board board)
-  (draw-background board)
-  (draw-lines board)
-  (draw-letters board)
-  (draw-dots board))
-
 (defn draw-stone
   "Draw a stone on the board.
    - color is one of: 1 - black, 2 - white
@@ -81,12 +72,16 @@
   (let [fill-color (if (= color 1) "black" "white")]
     (draw-circle board x y (board :stone-radius) fill-color "black")))
 
-(defn draw-stones
+(defn draw-board
   "Draw a board with stones
   - stones is a vector of 19*19 values where each value is either:
     0 - empty, 1 - black stone, 2 - white stone"
   [board stones]
-  (draw-board board)
+  (setup-board board)
+  (draw-background board)
+  (draw-lines board)
+  (draw-letters board)
+  (draw-dots board)
   (doseq [[i color] (indexed stones)]
     (if (contains? #{1 2} color)
       (let [x (mod i (board :lines))
