@@ -1,4 +1,5 @@
-(ns goboard.goban)
+(ns goboard.goban
+  (:use [goboard.utils :only [indexed]]))
 
 (def ^:const pixel 0.5)  ; hack to draw pixel-perfect lines
 (def ^:const dot-radius 2)  ; radius of the 9 board dots
@@ -76,9 +77,21 @@
    - color is one of: 1 - black, 2 - white
    - x and y are zero-indexed board coordinates starting from the top left
    corner of the board"
-    [board color x y]
+  [board color x y]
   (let [fill-color (if (= color 1) "black" "white")]
     (draw-circle board x y (board :stone-radius) fill-color "black")))
+
+(defn draw-stones
+  "Draw a board with stones
+  - stones is a vector of 19*19 values where each value is either:
+    0 - empty, 1 - black stone, 2 - white stone"
+  [board stones]
+  (draw-board board)
+  (doseq [[i color] (indexed stones)]
+    (if (contains? #{1 2} color)
+      (let [x (mod i (board :lines))
+            y (quot i (board :lines))]
+        (draw-stone board color x y)))))
 
 (defn draw-last-move [board x y]
   (draw-circle board x y dot-radius "red" "red"))
