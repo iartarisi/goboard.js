@@ -22,38 +22,42 @@
     (doseq [x (take (board :lines)
                     (iterate (partial + (board :space))
                              (+ pixel (board :offset))))]
-      ;; horizontal lines
-      (. (board :context) (moveTo close-edge x))
-      (. (board :context) (lineTo far-edge x))
-      ;; vertical lines
-      (. (board :context) (moveTo x close-edge))
-      (. (board :context) (lineTo x far-edge))))
-  (set! (. (board :context) -strokeStyle) (board :markings-color))
-  (. (board :context) (stroke)))
+      (doto (board :context)
+        ;; horizontal lines
+        (.moveTo close-edge x)
+        (.lineTo far-edge x)
+        ;; vertical lines
+        (.moveTo x close-edge)
+        (.lineTo x far-edge))))
+  (doto (board :context)
+    (#(set! (. % -strokeStyle) (board :markings-color)))
+    (.stroke)))
 
 (defn draw-letters [board]
-  (set! (. (board :context) -textBaseline) "top")
-  (set! (. (board :context) -fillStyle) (board :markings))
-  (dotimes [i (board :lines)]
-    (. (board :context) (fillText (get "abcdefghjklmnopqrst" i)
-                                  (+ (* i (board :space)) (board :offset))
-                                  (+ (board :inner) (* (/ 5 4) (board :space)))))
-    (. (board :context) (fillText (- (board :lines) i)
-                                  (+ (board :inner) (* (/ 5 4) (board :space)))
-                                  (+ (* i (board :space)) (board :offset))))))
+  (doto (board :context)
+    (#(set! (. % -textBaseline) "top"))
+    (#(set! (. % -fillStyle) (board :markings)))
+    (#(dotimes [i (board :lines)]
+        (. % (fillText (get "abcdefghjklmnopqrst" i)
+                       (+ (* i (board :space)) (board :offset))
+                       (+ (board :inner) (* (/ 5 4) (board :space)))))
+        (. % (fillText (- (board :lines) i)
+                       (+ (board :inner) (* (/ 5 4) (board :space)))
+                       (+ (* i (board :space)) (board :offset))))))))
 
 (defn draw-circle
   "Draw a circle on the board at the coordinates indicated by x and y."
   [board x y radius fill-color border-color]
-  (. (board :context) (beginPath))
-  (. (board :context) (arc (+ (board :offset) pixel (* x (board :space)))
-                           (+ (board :offset) pixel (* y (board :space)))
-                           radius 0 (* 2 (. js/Math -PI)) false))
-  (. (board :context) (closePath))
-  (set! (. (board :context) -strokeStyle) border-color)
-  (set! (. (board :context) -fillStyle) fill-color)
-  (. (board :context) (fill))
-  (. (board :context) (stroke)))
+  (doto (board :context)
+    (.beginPath)
+    (.arc (+ (board :offset) pixel (* x (board :space)))
+          (+ (board :offset) pixel (* y (board :space)))
+          radius 0 (* 2 (. js/Math -PI)) false)
+    (.closePath)
+    (#(set! (. % -strokeStyle) border-color))
+    (#(set! (. % -fillStyle) fill-color))
+    (.fill)
+    (.stroke)))
   
 (defn draw-dots
   "Draw standard goban dots in the nine points a.k.a. hoshi"
