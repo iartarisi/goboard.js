@@ -30,7 +30,7 @@
         (.moveTo x close-edge)
         (.lineTo x far-edge))))
   (doto (board :context)
-    (#(set! (. % -strokeStyle) (board :markings-color)))
+    (#(set! (. % -strokeStyle) (board :markings)))
     (.stroke)))
 
 (defn draw-letters [board]
