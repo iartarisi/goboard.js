@@ -1,16 +1,17 @@
 (ns goboard.goboard
-  (:use [goboard.goban :only [draw-board draw-last-move]]))
+  (:use [goboard.goban :only [make-board draw-last-move]]))
 
 (defn draw
   "Create the board struct and draw it
   - element-id - the DOM canvas id where the board will be drawn
-  - stones - a 19x19 array with stone positions where each values is either:
+  - stones - a 19x19 array with stone positions where each values is one of:
     0 - empty, 1 - black stone, 2 - white stone
   Optional positional args:
+  - playing - 1 (black) or 2 (white) indicates the current player's turn
   (if these are not given, then the last move will not be represented)
   - last-x - x coordonate of the last move
   - last-y - y coordonate of the last move"
-  [element-id stones & [last-x last-y :as last-move]]
+  [element-id stones & playing [x y :as last-move]]
   (def ^:const board {:lines 19
                       :size 620
                       :offset 20
@@ -22,7 +23,7 @@
                                   (getContext "2d"))
                       :background "#E8BD68"
                       :markings "#444"
-                      })
-  (draw-board board stones)
-  (if last-move
-    (draw-last-move board last-x last-y)))
+                      :stones stones
+                      :playing playing
+                      :last-move last-move})
+  (make-board board))

@@ -1,12 +1,47 @@
 (ns goboard.goban
+  (:require [goog.dom]
+            [goog.events :as events])
   (:use [goboard.utils :only [indexed]]))
 
 (def ^:const pixel 0.5)  ; hack to draw pixel-perfect lines
 (def ^:const dot-radius 2)  ; radius of the 9 board dots
 
-(defn setup-board [board]
+(def shadow (atom nil))
+
+(defn mouse-move
+  [board]
+  (fn [event]
+    (let [x (.-offsetX event)
+          y (.-offsetY event)
+          square (board :space)
+          half-square (/ square 2)]
+      (if (and (> x (- square half-square))
+               (< x (+ square (board :inner) half-square))
+               (> y (- square half-square))
+               (< y (+ square (board :inner) half-square)))
+        (let [X (Math/floor (/ (- x half-square) square))
+              Y (Math/floor (/ (- y half-square) square))
+              [shadow-x shadow-y] @shadow]
+          (if (or (not= X shadow-x)
+                  (not= Y shadow-y))
+            (do
+              (reset! shadow [X Y])
+              (draw-board board))))))))
+
+(defn mouse-out
+  [board]
+  (fn [event]
+    (reset! shadow nil)
+    (draw-board board)))
+
+(defn setup-board
+  [board]
   (set! (. (board :canvas) -height) (board :size))
-  (set! (. (board :canvas) -width) (board :size)))
+  (set! (. (board :canvas) -width) (board :size))
+  (if (board :playing)
+    (doto (.getElement goog.dom (board :canvas))
+      (events/listen (.-MOUSEMOVE events/EventType) (mouse-move board))
+      (events/listen (.-MOUSEOUT events/EventType) (mouse-out board)))))
 
 (defn draw-background [board]
   (set! (. (board :context) -fillStyle) (board :background))
@@ -17,6 +52,7 @@
     (. (board :context) (fillRect x y width height))))
 
 (defn draw-lines [board]
+  (.beginPath (board :context))
   (let [close-edge (board :offset)
         far-edge (+ (board :offset) (board :inner))]
     (doseq [x (take (board :lines)
@@ -76,21 +112,38 @@
   (let [fill-color (if (= color 1) "black" "white")]
     (draw-circle board x y (board :stone-radius) fill-color "black")))
 
+(defn draw-shadow
+  [board shadow]
+  (set! (.-globalAlpha (board :context)) 0.4)
+  (let [[x y] shadow]
+    (draw-stone board (board :playing) x y))
+  (set! (.-globalAlpha (board :context)) 1))
+
+(defn draw-last-move
+  [board]
+  (let [[x y] (board :last-move)]
+    (draw-circle board x y dot-radius "red" "red")))
+
 (defn draw-board
-  "Draw a board with stones
-  - stones is a vector of 19*19 values where each value is either:
-    0 - empty, 1 - black stone, 2 - white stone"
-  [board stones]
-  (setup-board board)
+  [board]
   (draw-background board)
   (draw-lines board)
   (draw-letters board)
   (draw-dots board)
-  (doseq [[i color] (indexed stones)]
+  (doseq [[i color] (indexed (board :stones))]
     (if (contains? #{1 2} color)
       (let [x (mod i (board :lines))
             y (quot i (board :lines))]
-        (draw-stone board color x y)))))
+        (draw-stone board color x y))))
+  (if (board :last-move)
+    (draw-last-move board))
+  (if @shadow
+    (draw-shadow board @shadow)))
 
-(defn draw-last-move [board x y]
-  (draw-circle board x y dot-radius "red" "red"))
+(defn make-board
+  "Draw a board with stones
+  - stones is a vector of 19*19 values where each value is either:
+    0 - empty, 1 - black stone, 2 - white stone"
+  [board]
+  (setup-board board)
+  (draw-board board))
