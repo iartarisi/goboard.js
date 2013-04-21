@@ -36,8 +36,8 @@
 
 (defn setup-board
   [board]
-  (set! (. (board :canvas) -height) (board :size))
-  (set! (. (board :canvas) -width) (board :size))
+  (set! (.-height (board :canvas)) (board :size))
+  (set! (.-width (board :canvas)) (board :size))
   (if (board :playing)
     (doto (.getElement goog.dom (board :canvas))
       (events/listen (.-MOUSEMOVE events/EventType) (mouse-move board))
@@ -66,13 +66,13 @@
         (.moveTo x close-edge)
         (.lineTo x far-edge))))
   (doto (board :context)
-    (#(set! (. % -strokeStyle) (board :markings)))
+    (#(set! (.-strokeStyle %) (board :markings)))
     (.stroke)))
 
 (defn draw-letters [board]
   (doto (board :context)
-    (#(set! (. % -textBaseline) "top"))
-    (#(set! (. % -fillStyle) (board :markings)))
+    (#(set! (.-textBaseline %) "top"))
+    (#(set! (.-fillStyle %) (board :markings)))
     (#(dotimes [i (board :lines)]
         (. % (fillText (get "abcdefghjklmnopqrst" i)
                        (+ (* i (board :space)) (board :offset))
@@ -88,10 +88,10 @@
     (.beginPath)
     (.arc (+ (board :offset) pixel (* x (board :space)))
           (+ (board :offset) pixel (* y (board :space)))
-          radius 0 (* 2 (. js/Math -PI)) false)
+          radius 0 (* 2 (.-PI js/Math)) false)
     (.closePath)
-    (#(set! (. % -strokeStyle) border-color))
-    (#(set! (. % -fillStyle) fill-color))
+    (#(set! (.-strokeStyle %) border-color))
+    (#(set! (.-fillStyle %) fill-color))
     (.fill)
     (.stroke)))
   
