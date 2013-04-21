@@ -8,6 +8,6 @@
   :plugins [[lein-cljsbuild "0.2.7"]]
   :cljsbuild {:builds
               [{:source-path "src/cljs"
-                :compiler {:output-to "resources/public/goboard.js"
-                           :optimizations :whitespace
-                           :pretty-print true}}]})
+                :compiler {:output-to "goboard.js"
+                           :optimizations :advanced
+                           :pretty-print false}}]})

@@ -2,7 +2,6 @@
 <html>
   <head><title>Javascript Go Board</title></head>
   <body>
-    <script type="text/javascript" src="goboard.js"></script>
     <canvas id="goBoard"></canvas>
     <script type="text/javascript" src="goboard.js"></script>
     <script type="text/javascript">
@@ -27,7 +26,10 @@
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-      goboard.goboard.draw("goBoard", stones, 2, 15, 4);
+      var black_is_next = 2;
+      var last_move_x = 15;
+      var last_move_y = 4;
+      goboard.draw("goBoard", stones, black_is_next, last_move_x, last_move_y);
     </script>
   </body>
 </html>

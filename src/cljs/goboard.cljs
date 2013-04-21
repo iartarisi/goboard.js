@@ -1,7 +1,7 @@
-(ns goboard.goboard
+(ns goboard
   (:use [goboard.goban :only [make-board draw-last-move]]))
 
-(defn draw
+(defn ^:export draw
   "Create the board struct and draw it
   - element-id - the DOM canvas id where the board will be drawn
   - stones - a 19x19 array with stone positions where each values is one of:
