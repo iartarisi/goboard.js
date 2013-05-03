@@ -7,7 +7,7 @@
   		 [org.clojure/clojurescript "0.0-1586"]]
   :plugins [[lein-cljsbuild "0.2.7"]]
   :cljsbuild {:builds
-              [{:source-path "src/cljs"
+              [{:source-path "src"
                 :compiler {:output-to "goboard.js"
                            :optimizations :advanced
                            :pretty-print false}}]})
