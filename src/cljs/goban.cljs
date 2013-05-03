@@ -41,14 +41,29 @@
     (reset! shadow nil)
     (draw-board board)))
 
+(defn get-stone
+  "Get the stone color at coordinates x, y"
+  [board x y]
+  (nth stones (+ (* 19 x) y)))
+
+(defn mouse-up
+  [board make-move]
+  (fn [event]
+    (let [location (mouse-location board event)]
+      (if location
+        (let [[X Y] location]
+          (if (not= 0 (get-stone board X Y))
+            (make-move X Y)))))))
+
 (defn setup-board
-  [board]
+  [board make-move]
   (set! (.-height (board :canvas)) (board :size))
   (set! (.-width (board :canvas)) (board :size))
   (if (board :playing)
     (doto (.getElement goog.dom (board :canvas))
       (events/listen (.-MOUSEMOVE events/EventType) (mouse-move board))
-      (events/listen (.-MOUSEOUT events/EventType) (mouse-out board)))))
+      (events/listen (.-MOUSEOUT events/EventType) (mouse-out board))
+      (events/listen (.-MOUSEUP events/EventType) (mouse-up board make-move)))))
 
 (defn draw-background [board]
   (set! (. (board :context) -fillStyle) (board :background))
@@ -148,9 +163,7 @@
     (draw-shadow board @shadow)))
 
 (defn make-board
-  "Draw a board with stones
-  - stones is a vector of 19*19 values where each value is either:
-    0 - empty, 1 - black stone, 2 - white stone"
-  [board]
-  (setup-board board)
+  "Draw a board with stones"
+  [board make-move]
+  (setup-board board make-move)
   (draw-board board))

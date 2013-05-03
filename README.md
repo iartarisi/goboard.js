@@ -12,11 +12,13 @@ To try, just download the [goboard.js](https://raw.github.com/mapleoin/goboard.j
 
 - `stones` - a javascript one-dimensional Array object of 19*19 integers indicating the stones on the board. Each of them can be: 0 - no stone, 1 - black stone, 2 - white stone.
 
-- `playing` (optional) - if given should be an integer: 1 - black, 2 - white which indicates the current player's color and that it is her turn to move.
+- `playing` (optional) - should be an integer: 1 - black, 2 - white which indicates the current player's color and that it is her turn to move.
 
-- `last_move_x` (optional) - if given, indicates the board X coordinate of the last move, must be an integer between 0 and 18 (left to right)
+- `make-move` (optional) - a javascript function of two arguments X and Y which are the coordinates of an empty space on the board that the user just clicked on.
 
-- `last_move_y` (optional) - if given, indicates the board Y coordinate of the last move, must be an integer between 0 and 18 (top to bottom)
+- `last_move_x` (optional) - indicates the board X coordinate of the last move, must be an integer between 0 and 18 (left to right)
+
+- `last_move_y` (optional) - indicates the board Y coordinate of the last move, must be an integer between 0 and 18 (top to bottom)
 
 
 You can also try downloading the [example.html](https://raw.github.com/mapleoin/goboard.js/master/goboard.js) file which will show the example screenshot below.

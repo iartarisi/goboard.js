@@ -9,9 +9,11 @@
   Optional positional args:
   - playing - 1 (black) or 2 (white) indicates the current player's turn
   (if these are not given, then the last move will not be represented)
+  - make-move - a callable that accepts two arguments X and Y which are
+    0-indexed board coordinates of a valid click on the board
   - last-x - x coordonate of the last move
   - last-y - y coordonate of the last move"
-  [element-id stones & playing [x y :as last-move]]
+  [element-id stones & playing make-move [x y :as last-move]]
   (def ^:const board {:lines 19
                       :size 620
                       :offset 20
@@ -26,4 +28,5 @@
                       :stones stones
                       :playing playing
                       :last-move last-move})
-  (make-board board))
+
+  (make-board board make-move))
