@@ -8,25 +8,32 @@
 
 (def shadow (atom nil))
 
+(defn mouse-location
+  "Return the X and Y of a board intersection
+   or nil if the event was out-of-bounds"
+  [board event]
+  (let [x (.-offsetX event)
+        y (.-offsetY event)
+        square (board :space)
+        half-square (/ square 2)]
+    (if (and (> x (- square half-square))
+             (< x (+ square (board :inner) half-square))
+             (> y (- square half-square))
+             (< y (+ square (board :inner) half-square)))
+      [(Math/floor (/ (- x half-square) square))
+       (Math/floor (/ (- y half-square) square))])))
+
 (defn mouse-move
   [board]
   (fn [event]
-    (let [x (.-offsetX event)
-          y (.-offsetY event)
-          square (board :space)
-          half-square (/ square 2)]
-      (if (and (> x (- square half-square))
-               (< x (+ square (board :inner) half-square))
-               (> y (- square half-square))
-               (< y (+ square (board :inner) half-square)))
-        (let [X (Math/floor (/ (- x half-square) square))
-              Y (Math/floor (/ (- y half-square) square))
-              [shadow-x shadow-y] @shadow]
-          (if (or (not= X shadow-x)
-                  (not= Y shadow-y))
-            (do
-              (reset! shadow [X Y])
-              (draw-board board))))))))
+    (let [[X Y :as in-bounds] (mouse-location board event)
+          [shadow-X shadow-Y] @shadow]
+      (if (and in-bounds
+               (or (not= X shadow-X)
+                   (not= Y shadow-Y)))
+        (do
+          (reset! shadow [X Y])
+          (draw-board board))))))
 
 (defn mouse-out
   [board]
