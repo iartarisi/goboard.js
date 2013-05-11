@@ -12,8 +12,8 @@
   "Return the X and Y of a board intersection
    or nil if the event was out-of-bounds"
   [board event]
-  (let [x (.-offsetX event)
-        y (.-offsetY event)
+  (let [x (- (.-offsetX event) (.-offsetLeft (board :canvas)))
+        y (- (.-offsetY event) (.-offsetTop (board :canvas)))
         square (board :space)
         half-square (/ square 2)]
     (if (and (> x (- square half-square))
