@@ -44,7 +44,7 @@
 (defn get-stone
   "Get the stone color at coordinates x, y"
   [board x y]
-  (nth stones (+ (* 19 x) y)))
+  (nth (board :stones) (+ x (* 19 y))))
 
 (defn mouse-up
   [board make-move]
@@ -52,7 +52,7 @@
     (let [location (mouse-location board event)]
       (if location
         (let [[X Y] location]
-          (if (not= 0 (get-stone board X Y))
+          (if (= 0 (get-stone board X Y))
             (make-move X Y)))))))
 
 (defn setup-board
