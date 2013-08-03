@@ -23,47 +23,10 @@
       [(Math/floor (/ (- x half-square) square))
        (Math/floor (/ (- y half-square) square))])))
 
-(defn mouse-move
-  [board]
-  (fn [event]
-    (let [[X Y :as in-bounds] (mouse-location board event)
-          [shadow-X shadow-Y] @shadow]
-      (if (and in-bounds
-               (or (not= X shadow-X)
-                   (not= Y shadow-Y)))
-        (do
-          (reset! shadow [X Y])
-          (draw-board board))))))
-
-(defn mouse-out
-  [board]
-  (fn [event]
-    (reset! shadow nil)
-    (draw-board board)))
-
 (defn get-stone
   "Get the stone color at coordinates x, y"
   [board x y]
   (nth (board :stones) (+ x (* 19 y))))
-
-(defn mouse-up
-  [board make-move]
-  (fn [event]
-    (let [location (mouse-location board event)]
-      (if location
-        (let [[X Y] location]
-          (if (= 0 (get-stone board X Y))
-            (make-move X Y)))))))
-
-(defn setup-board
-  [board make-move]
-  (set! (.-height (board :canvas)) (board :size))
-  (set! (.-width (board :canvas)) (board :size))
-  (if (board :playing)
-    (doto (.getElement goog.dom (board :canvas))
-      (events/listen (.-MOUSEMOVE events/EventType) (mouse-move board))
-      (events/listen (.-MOUSEOUT events/EventType) (mouse-out board))
-      (events/listen (.-MOUSEUP events/EventType) (mouse-up board make-move)))))
 
 (defn draw-background [board]
   (set! (. (board :context) -fillStyle) (board :background))
@@ -161,6 +124,43 @@
     (draw-last-move board))
   (if @shadow
     (draw-shadow board @shadow)))
+
+(defn mouse-move
+  [board]
+  (fn [event]
+    (let [[X Y :as in-bounds] (mouse-location board event)
+          [shadow-X shadow-Y] @shadow]
+      (if (and in-bounds
+               (or (not= X shadow-X)
+                   (not= Y shadow-Y)))
+        (do
+          (reset! shadow [X Y])
+          (draw-board board))))))
+
+(defn mouse-out
+  [board]
+  (fn [event]
+    (reset! shadow nil)
+    (draw-board board)))
+
+(defn mouse-up
+  [board make-move]
+  (fn [event]
+    (let [location (mouse-location board event)]
+      (if location
+        (let [[X Y] location]
+          (if (= 0 (get-stone board X Y))
+            (make-move X Y)))))))
+
+(defn setup-board
+  [board make-move]
+  (set! (.-height (board :canvas)) (board :size))
+  (set! (.-width (board :canvas)) (board :size))
+  (if (board :playing)
+    (doto (.getElement goog.dom (board :canvas))
+      (events/listen (.-MOUSEMOVE events/EventType) (mouse-move board))
+      (events/listen (.-MOUSEOUT events/EventType) (mouse-out board))
+      (events/listen (.-MOUSEUP events/EventType) (mouse-up board make-move)))))
 
 (defn make-board
   "Draw a board with stones"
