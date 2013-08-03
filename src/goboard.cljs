@@ -14,19 +14,19 @@
   - last-x - x coordonate of the last move
   - last-y - y coordonate of the last move"
   [element-id stones & playing make-move [x y :as last-move]]
-  (def ^:const board {:lines 19
-                      :size 620
-                      :offset 20
-                      :space 28 ; (.floor js/Math (/ size (+ 3 board-lines)))
-                      :inner 504  ; (* (- board-lines 1) space-width))
-                      :stone-radius 11  ; space * 2/5
-                      :canvas (. js/document (getElementById element-id))
-                      :context (. (. js/document (getElementById element-id))
-                                  (getContext "2d"))
-                      :background "#E8BD68"
-                      :markings "#444"
-                      :stones stones
-                      :playing playing
-                      :last-move last-move})
+  (def board {:lines 19
+              :size 620
+              :offset 20
+              :space 28 ; (.floor js/Math (/ size (+ 3 board-lines)))
+              :inner 504  ; (* (- board-lines 1) space-width))
+              :stone-radius 11  ; space * 2/5
+              :canvas (. js/document (getElementById element-id))
+              :context (. (. js/document (getElementById element-id))
+                          (getContext "2d"))
+              :background "#E8BD68"
+              :markings "#444"
+              :stones stones
+              :playing playing
+              :last-move last-move})
 
   (make-board board make-move))
